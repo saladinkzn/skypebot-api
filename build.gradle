@@ -1,0 +1,40 @@
+buildscript {
+  repositories {
+    mavenLocal()
+  }
+  dependencies {
+    classpath 'ru.shadam:publish-plugin:0.2.0-SNAPSHOT'
+  }
+}
+
+plugins {
+  id 'nebula.kotlin' version '1.0.3'
+}
+apply plugin: 'ru.shadam.publish'
+
+publish {
+  description = 'Api for Skype bot'
+  github 'saladinkzn', 'skypebot-api'
+  developerName = 'Timur Shakurov'
+  license = 'MIT'
+  licenseUrl = 'https://raw.githubusercontent.com/saladinkzn/skypebot-api/master/README.md'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.18'
+
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:converter-jackson:2.0.0'
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.7.1-2"
+    compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
+
+    testCompile 'junit:junit:4.12'
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '3.0'
+}
