@@ -3,6 +3,7 @@ package ru.shadam.skypeapi.impl
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -23,7 +24,7 @@ internal interface InternalSkypeApi {
             @Body message: OutgoingMessage
     ) : Call<Void>
 
-    @POST("/v2/conversations/{conversationId}/attachements/")
+    @POST("/v2/conversations/{conversationId}/attachments/")
     fun sendAttachement(
             @Path("conversationId") conversationId: String,
             @Body attachment: OutgoingAttachment
@@ -33,11 +34,12 @@ internal interface InternalSkypeApi {
     fun getAttachment (
             @Path("attachmentId") attachementId : String
     ) : Call<Attachment>
+
     @GET("/v2/attachments/{attachmentId}/views/{viewId}/")
     fun getAttachmentView(
             @Path("attachmentId") attachmentId: String,
             @Path("viewId") viewId: String
-    ) : Call<Array<Byte>>
+    ) : Call<ResponseBody>
 
 }
 
@@ -50,12 +52,12 @@ internal class DefaultSkypeApi(private val delegate: InternalSkypeApi) : SkypeAp
         return delegate.sendAttachement(conversationId, attachment).execute().body()
     }
 
-    override fun getAttachment(attachmentId: String): Attachment {
+    override fun getAttachment(attachmentId: String): Attachment? {
         return delegate.getAttachment(attachmentId).execute().body()
     }
 
     override fun getAttachmentView(attachmentId: String, viewId: String): Array<Byte> {
-        return delegate.getAttachmentView(attachmentId, viewId).execute().body()
+        return delegate.getAttachmentView(attachmentId, viewId).execute().body().bytes().toTypedArray()
     }
 }
 
@@ -64,7 +66,7 @@ internal fun createInternalSkypeApi(token: String): InternalSkypeApi {
         val request = chain.request()
         val newRequest = request.newBuilder().header("Authorization", "Bearer $token").build()
         chain.proceed(newRequest)
-    }).addInterceptor(HttpLoggingInterceptor({ message -> logger.debug(message) }).apply { level = HttpLoggingInterceptor.Level.BODY })
+    }).addInterceptor(HttpLoggingInterceptor({ message -> logger.info(message) }).apply { level = HttpLoggingInterceptor.Level.BODY })
             .build()
     return Retrofit.Builder()
             .addConverterFactory(JacksonConverterFactory.create(ObjectMapper().registerKotlinModule()))

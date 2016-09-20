@@ -8,18 +8,17 @@ data class Activity(val id: String, val from: String, val to: String)
 data class Conversation(val id: String)
 
 data class Attachment(
-        val attachmentId: String,
-        // TODO: enum
-        val type: String,
-        val originalBase64: String,
-        val thumbnailBase64: String,
+        val attachmentId: String?,
+        val type: AttachmentType,
+        val originalBase64: String?,
+        val thumbnailBase64: String?,
         val name: String? = null
 )
 
 data class OutgoingAttachment(
-        val type: String,
+        val type: AttachmentType,
         val originalBase64: String,
-        val thumbnailBase64: String,
+        val thumbnailBase64: String? = null,
         val name: String? = null
 )
 
@@ -27,6 +26,10 @@ data class OutgoingAttachmentResponse(
         val attachmentId: String,
         val activityId: String? = null
 )
+
+enum class AttachmentType {
+    Image, Video
+}
 
 data class User(val id: String)
 

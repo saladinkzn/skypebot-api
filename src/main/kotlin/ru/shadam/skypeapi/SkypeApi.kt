@@ -8,7 +8,7 @@ interface SkypeApi {
 
     fun sendAttachment(conversationId: String, attachment: OutgoingAttachment) : OutgoingAttachmentResponse
 
-    fun getAttachment(attachmentId: String) : Attachment
+    fun getAttachment(attachmentId: String) : Attachment?
 
     fun getAttachmentView(attachmentId: String, viewId: String) : Array<Byte>
 }
