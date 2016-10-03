@@ -15,5 +15,11 @@ include 'shared'
 include 'api'
 include 'services:webservice'
 */
+pluginRepositories {
+  maven {
+    url 'https://jcenter.bintray.com/'
+  }
+  gradlePluginPortal()
+}
 
 rootProject.name = 'skypebot-api'
