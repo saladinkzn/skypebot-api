@@ -2,7 +2,9 @@ package ru.shadam.skypeapi.impl
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import org.slf4j.Logger
@@ -61,19 +63,30 @@ internal class DefaultSkypeApi(private val delegate: InternalSkypeApi) : SkypeAp
     }
 }
 
-internal fun createInternalSkypeApi(token: String): InternalSkypeApi {
-    val client = OkHttpClient.Builder().addInterceptor({ chain ->
-        val request = chain.request()
-        val newRequest = request.newBuilder().header("Authorization", "Bearer $token").build()
-        chain.proceed(newRequest)
-    }).addInterceptor(HttpLoggingInterceptor({ message -> logger.info(message) }).apply { level = HttpLoggingInterceptor.Level.BODY })
+internal fun createInternalSkypeApi(token: String, baseUrl: String): InternalSkypeApi {
+    val loggingInterceptor = HttpLoggingInterceptor({ message -> logger.info(message) })
+            .apply { level = HttpLoggingInterceptor.Level.BODY }
+    //
+    val authorizationInterceptor = AuthorizationInterceptor(token)
+    val client = OkHttpClient.Builder()
+            .addInterceptor(authorizationInterceptor)
+            .addInterceptor(loggingInterceptor)
             .build()
     return Retrofit.Builder()
             .addConverterFactory(JacksonConverterFactory.create(ObjectMapper().registerKotlinModule()))
             .client(client)
-            .baseUrl("https://apis.skype.com")
+            .baseUrl(baseUrl)
             .build()
             .create(InternalSkypeApi::class.java)
+}
+
+internal class AuthorizationInterceptor(private val token: String) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val newRequest = chain.request().newBuilder()
+            .header("Authorization", "Bearer $token")
+            .build()
+        return chain.proceed(newRequest)
+    }
 }
 
 private val logger : Logger = LoggerFactory.getLogger("ru.shadam.skypeapi.skypeapi")

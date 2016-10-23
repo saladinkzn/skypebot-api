@@ -13,4 +13,4 @@ interface SkypeApi {
     fun getAttachmentView(attachmentId: String, viewId: String) : Array<Byte>
 }
 
-fun createSkypeApi(token: String) : SkypeApi = DefaultSkypeApi(createInternalSkypeApi(token))
+fun createSkypeApi(token: String, baseUrl: String = "https://apis.skype.com") : SkypeApi = DefaultSkypeApi(createInternalSkypeApi(token, baseUrl))
