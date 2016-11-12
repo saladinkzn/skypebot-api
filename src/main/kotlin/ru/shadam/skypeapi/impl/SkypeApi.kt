@@ -47,6 +47,9 @@ internal interface InternalSkypeApi {
 
 internal class DefaultSkypeApi(private val delegate: InternalSkypeApi) : SkypeApi {
     override fun sendMessage(conversationId: String, message: String) {
+        if(message.isEmpty()) {
+            throw IllegalArgumentException("message cannot be empty")
+        }
         delegate.sendMessage(conversationId, OutgoingMessage(message)).execute()
     }
 

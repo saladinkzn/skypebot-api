@@ -31,10 +31,10 @@ internal interface AuthApi {
     ) : Call<Token>
 }
 
-internal fun createInternalApi(): AuthApi {
+internal fun createInternalApi(baseUrl: String = "https://login.microsoftonline.com"): AuthApi {
     val logging = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
     val authApi = Retrofit.Builder()
-            .baseUrl("https://login.microsoftonline.com")
+            .baseUrl(baseUrl)
             .addConverterFactory(JacksonConverterFactory.create(ObjectMapper().registerKotlinModule().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)))
             .client(OkHttpClient.Builder().addInterceptor(logging).build())
             .build()

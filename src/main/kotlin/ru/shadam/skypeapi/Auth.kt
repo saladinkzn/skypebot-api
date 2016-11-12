@@ -6,8 +6,8 @@ import ru.shadam.skypeapi.impl.createInternalApi
 /**
  * @author sala
  */
-fun createAuth(clientId: String, clientSecret: String) : Auth {
-    return AuthImpl(clientId, clientSecret, createInternalApi())
+fun createAuth(clientId: String, clientSecret: String, baseUrl: String = "https://login.microsoftonline.com") : Auth {
+    return AuthImpl(clientId, clientSecret, createInternalApi(baseUrl))
 }
 
 interface Auth {
