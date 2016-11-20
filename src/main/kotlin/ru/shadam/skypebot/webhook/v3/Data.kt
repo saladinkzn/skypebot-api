@@ -13,7 +13,7 @@ import java.time.LocalDateTime
     JsonSubTypes.Type(name = "message/text", value = MessageV3::class),
     JsonSubTypes.Type(name = "message/image", value = MessageV3::class),
     JsonSubTypes.Type(name = "activity/contactRelationUpdate", value = ContactRelationUpdateV3::class),
-    JsonSubTypes.Type(name = "activity/conversationUpdate", value = ConversationUpdateV3::class)
+    JsonSubTypes.Type(name = "conversationUpdate", value = ConversationUpdateV3::class)
 )
 interface ActivityV3
 
