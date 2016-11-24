@@ -30,7 +30,7 @@ data class MessageV3 (
     val summary: String?,
     val text: String,
     val attachments: List<AttachmentV3>?,
-    val entities: List<*>
+    val entities: List<JsonNode>
 ) : ActivityV3
 
 data class ContactRelationUpdateV3 (
